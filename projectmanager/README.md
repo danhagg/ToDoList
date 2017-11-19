@@ -14,6 +14,7 @@ git remote add origin git@github.com:danhagg/ToDoList.git
 git push -u origin master
 ```
 
+### v0.2
 Let's make a new git branch for production
 ```
 git branch v0.1
@@ -175,11 +176,122 @@ Now our webpage looks like this and the browser's developer console displays our
 
 ![image](../readme_images/img_2.png)
 
-Let's take a breather and push the current local version (v0.1) of the app to GitHub (and create that version v0.1 on github). Also, make a GitHub pull request to merge v0.1 with GitHub Master. Merge v0.1 and master on GitHub. Update local master. Make a new local branch v0.2 to continue development.
-
+Let's take a breather and push the current local version `v0.1` of the app to GitHub (and create that version `v0.1` on GitHub).
 
 ```
 git add -A
 git commit -m"First Component in the making"
 git push --set-upstream origin v0.1
 ```
+
+Also, make a GitHub pull request to merge `v0.1` with GitHub `master`. Merge `v0.1` and `master` on GitHub.
+
+Now back in terminal in the ToDoList app root folder... Update local `master`. Make a new local branch `v0.2` to continue development.
+
+```
+git checkout master
+git pull
+git branch v0.2
+git checkout v0.2
+```
+
+### v0.2
+We have an array of objects.
+```js
+projects: [
+  {
+    title: 'Business website',
+    category: 'Web Design'
+  },
+  {
+    title: 'Social App',
+    category: 'Mobile Development'
+  },
+  {
+    title: 'Ecommerce Shopping Cart',
+    category: 'Web Development'
+  }
+]
+```
+Ideally, we would use a separate component for each item of the array objects and then map through those projects and output the individual object components.
+
+Further explain with an example
+
+In `src/Components` folder make a new file `ProjectItem.js`. Return a list of each project.
+```js
+import React, { Component } from 'react';
+
+class ProjectItem extends Component {
+  render () {
+    return (
+      <li className='Project'>
+      </li>
+    );
+  }
+}
+
+export default ProjectItem;
+```
+
+Back in `Projects.js` we add variable projectItems and add an if statement `if (this.props.projects)` to test if there are any projects. If so, we `map` thru the array to pass the projects to the projectItems variable `<ProjectItem key={project.title} project={project} />`
+Then add `{projectItems}` to the `Projects div`.
+We also need to import the ProjectItem Component with `import ProjectItem from './ProjectItem';` at the top of the `Projects.js file` which now looks like this.
+
+
+```js
+import React, { Component } from 'react';
+import ProjectItem from './ProjectItem';
+
+class Projects extends Component {
+  render () {
+    let projectItems;
+    if (this.props.projects) {
+      projectItems = this.props.projects.map(project => {
+        return (
+          <ProjectItem key={project.title} project={project} />
+        );
+      });
+    }
+    return (
+      <div className='Projects'>
+        {projectItems}
+      </div>
+    );
+  }
+}
+
+export default Projects;
+```
+
+`localhost:3000` looks like this with only bullet points.
+![image](../readme_images/img_3.png)
+
+This is because our `ProjectItems.js` `<li>` is empty, which we can go and fix now. We are receiving `project` as a property and so it will be passed in as such.
+
+```js
+import React, { Component } from 'react';
+
+class ProjectItem extends Component {
+  render () {
+    return (
+      <li className='Project'>
+        <strong>{this.props.project.title}</strong>: {this.props.project.category}
+      </li>
+    );
+  }
+}
+
+export default ProjectItem;
+```
+
+So, in summary.
+1. In `App.js`
+  - We have a `state` called `projects` in our main app component `this.state = {
+    projects: [`
+  - We are passing it into `Projects.js` as a `property` with `<Projects projects={this.state.projects} />`
+2. Inside `Projects.js`
+  - we are mapping through that array and outputting a ProjectItem Component `<ProjectItem key={project.title} project={project}`
+3. which has, from `ProjectItem.js`
+  - an output of `title` and `category` coded with `<strong>{this.props.project.title}</strong> - {this.props.project.category}`
+
+![image](../readme_images/img_4.png)
