@@ -1,3 +1,5 @@
+Here I make a walkthrough of how to make a ToDo List in React which can be found at [ToDo.porkpy.com](https://ToDo.porkpy.com/)
+
 This app build is based upon Traversy Media's tutorial which can be found [here](https://www.youtube.com/watch?v=A71aqufiNtQ).
 
 I will walk through, in detail, the steps I went through to produce the final version of the app found on my GitHub page [here](https://github.com/danhagg/ToDoList).
@@ -302,6 +304,7 @@ Normally the `state` information and the keys `projects` are saved in the main `
 Let's make that component using a `Life Cycle` method and `componentWillMount`. So the entire contents of the `projects` array in `App.js` is cut out to leave an empty array and pasted into the `componentWillMount` function.
 
 `App.js` now looks like this
+
 ```js
 import React, { Component } from 'react';
 import Projects from './Components/Projects';
@@ -346,3 +349,154 @@ class App extends Component {
 
 export default App;
 ```
+
+### v0.4 Include form to allow user to add projects
+Create a new Component in src/Components called `AddProject.js`.
+
+Add import to `App.js` and add Component name to `render()`...
+
+```js
+import AddProject from './Components/AddProject';
+
+...
+
+      <AddProject />
+```
+
+Now we have...
+
+![image](../readme_images/img_5.png)
+
+Now we make a large expansion to the `AddProject.js` with a `form`.
+
+The subtle process of taking in data in forms I've now come to realise is full of jiggery-pokery in the code.
+
+Let's begin the nonsense...
+
+`Title` and `category` given `ref` so we can get their values when the user submits the `form`.
+
+We want `categories` to be property of the component. So we set default properties with `static defaultProps`. In addition, we want to map through these `categories` to yield them as `categoryOptions` in the `render()` function. The option is also given a `key` and `value` of `category`.
+
+In addition to the above code accepting the `title` and `category`... to submit the `form` we're gonna...
+1. add a handler `onSubmit` to the `form` element
+2. add a `handleSubmit` function with an event parameter
+3. add a `submit` button.
+
+Also, we wish to add a `constructor` to collect all that information that the user types in. This will collect the data in a `state`.
+
+The `newProject` object in the `contructor` is left empty and will be set once the user inputs and `submits.``
+
+We grab values of form with the `refs` value. And make stubborn demand for a title in the `handleSubmit()` function. We then setState with the `ref values`. We also add a callback function to send that `state` up into the `App.js` which we do in the form of properties with `this.props.addProject(newProject)`. Then we add `addProject` to the `App div` in `App.js`. We also add the handleAddProject function to the App.js file.
+
+The `AddProject.js` file now looks like this.
+```js
+import React, { Component } from 'react';
+
+class AddProject extends Component {
+  constructor() {
+    super()
+    this.state = {
+      newProject:{}
+    }
+  }
+
+  static defaultProps = {
+    categories: ['Web Design', 'Web Development', 'Mobile Development']
+  }
+
+  handleSubmit(e) {
+    if(this.refs.title.value === ''){
+      alert('Title is required');
+    } else {
+      this.setState({newProject:{
+        title: this.refs.title.value,
+        category: this.refs.category.value
+      }}, function () {
+        this.props.addProject(this.state.newProject);
+      });
+    }
+    e.preventDefault();
+  }
+
+  render () {
+    let categoryOptions = this.props.categories.map(category => {
+      return <option key={category} value="category">{category}</option>
+    });
+    return (
+      <div>
+        <h3>Add Project</h3>
+        <form onSubmit={this.handleSubmit.bind(this)}>
+          <div>
+            <label>Title</label><br />
+            <input type='text' ref='title' />
+          </div>
+          <div>
+            <label>Category</label><br />
+            <select ref='category'>
+            {categoryOptions}
+            </select>
+          </div>
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+    );
+  }
+}
+
+export default AddProject;
+```
+
+The `App.js` file now looks like this.
+```js
+import React, { Component } from 'react';
+import Projects from './Components/Projects';
+import AddProject from './Components/AddProject';
+import './App.css';
+
+class App extends Component {
+  constructor () {
+    super();
+    this.state = {
+      projects: []
+    }
+  }
+
+  // This is a Life Cycle method that fires off everytime the component is rerendered.
+
+  componentWillMount () {
+    this.setState({projects: [
+      {
+        title: 'Business website',
+        category: 'Web Design'
+      },
+      {
+        title: 'Social App',
+        category: 'Mobile Development'
+      },
+      {
+        title: 'Ecommerce Shopping Cart',
+        category: 'Web Development'
+      }
+    ]});
+  }
+
+  handleAddProject (project) {
+    console.log(project);
+  }
+
+  render () {
+    return (
+      <div className='App'>
+        <AddProject addProject={this.handleAddProject.bind(this)} />
+        <Projects projects={this.state.projects} />
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+We now have this functionality following input submission in our browser!
+
+![image](../readme_images/img_6.png)
