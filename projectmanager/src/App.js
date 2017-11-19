@@ -6,22 +6,29 @@ class App extends Component {
   constructor () {
     super();
     this.state = {
-      projects: [
-        {
-          title: 'Business website',
-          category: 'Web Design'
-        },
-        {
-          title: 'Social App',
-          category: 'Mobile Development'
-        },
-        {
-          title: 'Ecommerce Shopping Cart',
-          category: 'Web Development'
-        }
-      ]
+      projects: []
     }
   }
+
+  // This is a Life Cycle method that fires off everytime the component is rerendered.
+
+  componentWillMount () {
+    this.setState({projects: [
+      {
+        title: 'Business website',
+        category: 'Web Design'
+      },
+      {
+        title: 'Social App',
+        category: 'Mobile Development'
+      },
+      {
+        title: 'Ecommerce Shopping Cart',
+        category: 'Web Development'
+      }
+    ]});
+  }
+
   render () {
     return (
       <div className='App'>

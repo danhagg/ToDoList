@@ -295,3 +295,54 @@ So, in summary.
   - an output of `title` and `category` coded with `<strong>{this.props.project.title}</strong> - {this.props.project.category}`
 
 ![image](../readme_images/img_4.png)
+
+### v0.3
+Normally the `state` information and the keys `projects` are saved in the main `App.js` but the data itself is saved in its own Component.
+
+Let's make that component using a `Life Cycle` method and `componentWillMount`. So the entire contents of the `projects` array in `App.js` is cut out to leave an empty array and pasted into the `componentWillMount` function.
+
+`App.js` now looks like this
+```js
+import React, { Component } from 'react';
+import Projects from './Components/Projects';
+import './App.css';
+
+class App extends Component {
+  constructor () {
+    super();
+    this.state = {
+      projects: []
+    }
+  }
+
+  // This is a Life Cycle method that fires off everytime the component is rerendered.
+
+  componentWillMount () {
+    this.setState({projects: [
+      {
+        title: 'Business website',
+        category: 'Web Design'
+      },
+      {
+        title: 'Social App',
+        category: 'Mobile Development'
+      },
+      {
+        title: 'Ecommerce Shopping Cart',
+        category: 'Web Development'
+      }
+    ]});
+  }
+
+  render () {
+    return (
+      <div className='App'>
+        My App
+        <Projects projects={this.state.projects} />
+      </div>
+    );
+  }
+}
+
+export default App;
+```
