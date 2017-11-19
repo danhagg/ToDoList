@@ -175,11 +175,11 @@ Now our webpage looks like this and the browser's developer console displays our
 
 ![image](../readme_images/img_2.png)
 
-Let's take a breather and push the current local version (v0.1) of the app to GitHub. Make a GitHub pull request to merge v0.1 with GitHub Master. Merge v0.1 and master. Update local master. Make a new local branch v0.2 to continue development.
+Let's take a breather and push the current local version (v0.1) of the app to GitHub (and create that version v0.1 on github). Also, make a GitHub pull request to merge v0.1 with GitHub Master. Merge v0.1 and master on GitHub. Update local master. Make a new local branch v0.2 to continue development.
 
 
 ```
 git add -A
 git commit -m"First Component in the making"
-git push
+git push --set-upstream origin v0.1
 ```
