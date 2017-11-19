@@ -14,6 +14,12 @@ git remote add origin git@github.com:danhagg/ToDoList.git
 git push -u origin master
 ```
 
+Let's make a new git branch for production
+```
+git branch v0.1
+git checkout v0.1
+```
+
 The nice people at React have created a `create-react-app` tool that creates react app in a single command thereby abnegating the use of webpack or Gulp. We will create and name our app `projectmanager` in the ToDoList directory as follows...
 
 ```
@@ -168,3 +174,12 @@ export default Projects;
 Now our webpage looks like this and the browser's developer console displays our projects objects showing that the projects component can access the data added to `App.js`.
 
 ![image](../readme_images/img_2.png)
+
+Let's take a breather and push the current local version (v0.1) of the app to GitHub. Make a GitHub pull request to merge v0.1 with GitHub Master. Merge v0.1 and master. Update local master. Make a new local branch v0.2 to continue development.
+
+
+```
+git add -A
+git commit -m"First Component in the making"
+git push
+```
