@@ -500,3 +500,52 @@ export default App;
 We now have this functionality following input submission in our browser!
 
 ![image](../readme_images/img_6.png)
+
+### v0.5
+So we have the new project added, instead of just console.logging it with the `handleAddProject()` function, we change the function to set the state of the main `App.js` to hold the new project.
+
+```js
+// get state, push new project to it, set state again
+handleAddProject (project) {
+  let projects = this.state.projects;
+  projects.push(project);
+  this.setState({projects: projects});
+}
+```
+Install a package to give each project a unique id.
+```
+npm install --save uuid
+```
+Add import `uuid` statement in `App.js`.
+Add uuid to object properties in `App.js`
+
+```js
+import uuid from 'uuid';
+
+componentWillMount () {
+  this.setState({projects: [
+    {
+      id: uuid.v4(),
+      title: 'Business website',
+      category: 'Web Design'
+    }
+  })
+}
+```
+
+And to `AddProject.js` the uuid needs to be add
+```js
+import uuid from 'uuid';
+...
+
+
+    this.setState({newProject:{
+      id: uuid.v4()
+    }
+  }
+})
+```
+
+In `ProjectItem.js` we can change `{this.props.project.title}` to `{this.props.project.id}` and view the current unique id's on browser to see that all is hunky-dory.
+
+![image](../readme_images/img_7.png)
