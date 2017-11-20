@@ -549,3 +549,149 @@ import uuid from 'uuid';
 In `ProjectItem.js` we can change `{this.props.project.title}` to `{this.props.project.id}` and view the current unique id's on browser to see that all is hunky-dory.
 
 ![image](../readme_images/img_7.png)
+
+### v0.6
+Add project deletion capabilities.
+
+To `ProjectItem.js` add a link that executes a function onmouse button click `<a href='#' onClick={this.deleteProject.bind(this)}>X</a>`
+
+```js
+import React, { Component } from 'react';
+
+class ProjectItem extends Component {
+  deleteProject (id) {
+    this.props.onDelete(id);
+  }
+
+
+  render () {
+    return (
+      <li className='Project'>
+        <strong>{this.props.project.title}</strong>: {this.props.project.category} <a href='#' onClick={this.deleteProject.bind(this, this.props.project.id)}>X</a>
+      </li>
+    );
+  }
+}
+
+export default ProjectItem;
+```
+We are two components deep in `ProjectItem.js` so we have to pass the `onDelete(id)` up to `Project.js` then to `App.js`.
+
+In `ProjectItem.js`
+```js
+import React, { Component } from 'react';
+
+// deleteProject added
+class ProjectItem extends Component {
+  deleteProject (id) {
+    this.props.onDelete(id);
+  }
+
+  // deleteProject and this.props.project.id added
+  render () {
+    return (
+      <li className='Project'>
+        <strong>{this.props.project.title}</strong>: {this.props.project.category} <a href='#' onClick={this.deleteProject.bind(this, this.props.project.id)}>X</a>
+      </li>
+    );
+  }
+}
+
+export default ProjectItem;
+```
+
+In `Project.js`
+```js
+import React, { Component } from 'react';
+import ProjectItem from './ProjectItem';
+
+// deleteProject added
+class Projects extends Component {
+  deleteProject (id) {
+    this.props.onDelete(id);
+  }
+  // onDelete added
+  render () {
+    let projectItems;
+    if (this.props.projects) {
+      projectItems = this.props.projects.map(project => {
+        return (
+          <ProjectItem onDelete={this.deleteProject.bind(this)} key={project.title} project={project} />
+        );
+      });
+    }
+    return (
+      <div className='Projects'>
+        <h3>Latest Projects</h3>
+        {projectItems}
+      </div>
+    );
+  }
+}
+
+export default Projects;
+```
+
+In `App.js`
+```js
+import React, { Component } from 'react';
+import Projects from './Components/Projects';
+import AddProject from './Components/AddProject';
+import uuid from 'uuid';
+import './App.css';
+
+class App extends Component {
+  constructor () {
+    super();
+    this.state = {
+      projects: []
+    }
+  }
+
+  componentWillMount () {
+    this.setState({projects: [
+      {
+        id: uuid.v4(),
+        title: 'Business website',
+        category: 'Web Design'
+      },
+      {
+        id: uuid.v4(),
+        title: 'Social App',
+        category: 'Mobile Development'
+      },
+      {
+        id: uuid.v4(),
+        title: 'Ecommerce Shopping Cart',
+        category: 'Web Development'
+      }
+    ]});
+  }
+  handleAddProject (project) {
+    let projects = this.state.projects;
+    projects.push(project);
+    this.setState({projects: projects});
+  }
+
+  // 1. Get state. 2. find index in all projects, 3. splice out 4. reset current as state
+  handleDeleteProject (id) {
+    let projects = this.state.projects;
+    let index = projects.findIndex(x => x.id === id);
+    projects.splice(index, 1);
+    this.setState({projects: projects});
+  }
+  // onDelete added
+  render () {
+    return (
+      <div className='App'>
+        <AddProject addProject={this.handleAddProject.bind(this)} />
+        <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)}/>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+![image](../readme_images/img_8.png)

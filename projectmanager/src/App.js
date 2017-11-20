@@ -40,11 +40,19 @@ class App extends Component {
     this.setState({projects: projects});
   }
 
+  // 1. Get state. 2. find index in all projects, 3. splice out 4. reset current as state
+  handleDeleteProject (id) {
+    let projects = this.state.projects;
+    let index = projects.findIndex(x => x.id === id);
+    projects.splice(index, 1);
+    this.setState({projects: projects});
+  }
+
   render () {
     return (
       <div className='App'>
         <AddProject addProject={this.handleAddProject.bind(this)} />
-        <Projects projects={this.state.projects} />
+        <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)}/>
       </div>
     );
   }
