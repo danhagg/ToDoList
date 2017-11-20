@@ -694,4 +694,5 @@ class App extends Component {
 export default App;
 ```
 
+So we can now add, and remove, projects from our list
 ![image](../readme_images/img_8.png)
