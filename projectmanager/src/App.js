@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Projects from './Components/Projects';
 import AddProject from './Components/AddProject';
+import ToDos from './Components/ToDos';
 import uuid from 'uuid';
 import './App.css';
-import $ from 'jquery' //npm install jquery and import
+import $ from 'jquery'; // npm install jquery and import
 
 // added todos[]
 class App extends Component {
@@ -12,7 +13,7 @@ class App extends Component {
     this.state = {
       projects: [],
       todos: []
-    }
+    };
   }
 
   // Create a function that will be run in both componentWillMount + componentDidMount
@@ -80,7 +81,9 @@ class App extends Component {
     return (
       <div className='App'>
         <AddProject addProject={this.handleAddProject.bind(this)} />
-        <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)}/>
+        <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)} />
+        <hr />
+        <ToDos todos={this.state.todos} />
       </div>
     );
   }

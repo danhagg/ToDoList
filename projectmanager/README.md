@@ -800,4 +800,63 @@ export default App;
 We can now see out imported `todos` and the `projects`
 ![image](../readme_images/img_9.png)
 
-### v0.8
+### v0.8 Use the todos in our app
+Make a `ToDo.js` and `ToDoItem.js` and will copy `Project.js` to `ToDo.js`
+
+`ToDo.js`
+```js
+import React, { Component } from 'react';
+import ToDoItem from './ToDoItem';
+
+class ToDos extends Component {
+  // deleteProject (id) {
+  //   this.props.onDelete(id);
+  render () {
+    let todoItems;
+    if (this.props.todos) {
+      todoItems = this.props.todos.map(todo => {
+        return (
+          <todoItem key={todo.title} todo={todo} />
+        );
+      });
+    }
+    return (
+      <div className='Todos'>
+        <h3>ToDo List</h3>
+        {todoItems}
+      </div>
+    );
+  }
+}
+
+export default ToDos;
+```
+
+`ToDoItem.js`
+```js
+import React, { Component } from 'react';
+
+class ToDoItem extends Component {
+  render () {
+    return (
+      <li className='ToDo'>
+        <strong>{this.props.todo.title}</strong>
+      </li>
+    );
+  }
+}
+
+export default ToDoItem;
+```
+
+Then import and render in `App.js`
+```js
+import ToDos from './Components/ToDos';
+...
+
+render(){
+  ...
+  <ToDos todos={this.state.todos} />
+}
+```
+Doesn't render ToDo list. Workout why?
