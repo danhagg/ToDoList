@@ -1,3 +1,4 @@
+check v0.1 title
 Here I make a walkthrough of how to make a ToDo List in React which can be found at [ToDo.porkpy.com](https://ToDo.porkpy.com/)
 
 This app build is based upon Traversy Media's tutorial which can be found [here](https://www.youtube.com/watch?v=A71aqufiNtQ).
@@ -696,3 +697,107 @@ export default App;
 
 So we can now add, and remove, projects from our list
 ![image](../readme_images/img_8.png)
+
+### v0.7
+##### How to Bring in data from another API
+Let's get some mock todo data from an API [here](https://jsonplaceholder.typicode.com/).
+
+Will use a `LifeCycle` function with a `GET` request to the jsonpaceholder todo API.
+
+In `App.js`.
+We refactor the App.js to...
+```js
+import React, { Component } from 'react';
+import Projects from './Components/Projects';
+import AddProject from './Components/AddProject';
+import uuid from 'uuid';
+import './App.css';
+import $ from 'jquery' //npm install jquery and import
+
+// added todos[]
+class App extends Component {
+  constructor () {
+    super();
+    this.state = {
+      projects: [],
+      todos: []
+    }
+  }
+
+  // Create a function that will be run in both componentWillMount + componentDidMount
+  // Will use JQuery to make an http request
+  getTodos () {
+    $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/todos',
+      dataType: 'json',
+      cache: 'false',
+      success: function (data) {
+        this.setState({todos: data}), function () {
+          console.log(this.state);
+        };
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.log(err);
+      }
+    });
+  }
+
+  getProjects () {
+    this.setState({projects: [
+      {
+        id: uuid.v4(),
+        title: 'Business website',
+        category: 'Web Design'
+      },
+      {
+        id: uuid.v4(),
+        title: 'Social App',
+        category: 'Mobile Development'
+      },
+      {
+        id: uuid.v4(),
+        title: 'Ecommerce Shopping Cart',
+        category: 'Web Development'
+      }
+    ]});
+  }
+
+  // LifeCycle functions that get Projects and ToDos
+  componentWillMount () {
+    this.getProjects();
+    this.getTodos();
+  }
+
+  componentDidMount () {
+    this.getTodos();
+  }
+
+  handleAddProject (project) {
+    let projects = this.state.projects;
+    projects.push(project);
+    this.setState({projects: projects});
+  }
+
+  handleDeleteProject (id) {
+    let projects = this.state.projects;
+    let index = projects.findIndex(x => x.id === id);
+    projects.splice(index, 1);
+    this.setState({projects: projects});
+  }
+
+  render () {
+    return (
+      <div className='App'>
+        <AddProject addProject={this.handleAddProject.bind(this)} />
+        <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)}/>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+We can now see out imported `todos` and the `projects`
+![image](../readme_images/img_9.png)
+
+### v0.8
