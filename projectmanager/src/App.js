@@ -3,18 +3,37 @@ import Projects from './Components/Projects';
 import AddProject from './Components/AddProject';
 import uuid from 'uuid';
 import './App.css';
+import $ from 'jquery' //npm install jquery and import
 
+// added todos[]
 class App extends Component {
   constructor () {
     super();
     this.state = {
-      projects: []
+      projects: [],
+      todos: []
     }
   }
 
-  // This is a Life Cycle method that fires off everytime the component is rerendered.
+  // Create a function that will be run in both componentWillMount + componentDidMount
+  // Will use JQuery to make an http request
+  getTodos () {
+    $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/todos',
+      dataType: 'json',
+      cache: 'false',
+      success: function (data) {
+        this.setState({todos: data}), function () {
+          console.log(this.state);
+        };
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.log(err);
+      }
+    });
+  }
 
-  componentWillMount () {
+  getProjects () {
     this.setState({projects: [
       {
         id: uuid.v4(),
@@ -33,14 +52,23 @@ class App extends Component {
       }
     ]});
   }
-  // get state, push new project to it, set state again
+
+  // LifeCycle functions that get Projects and ToDos
+  componentWillMount () {
+    this.getProjects();
+    this.getTodos();
+  }
+
+  componentDidMount () {
+    this.getTodos();
+  }
+
   handleAddProject (project) {
     let projects = this.state.projects;
     projects.push(project);
     this.setState({projects: projects});
   }
 
-  // 1. Get state. 2. find index in all projects, 3. splice out 4. reset current as state
   handleDeleteProject (id) {
     let projects = this.state.projects;
     let index = projects.findIndex(x => x.id === id);
